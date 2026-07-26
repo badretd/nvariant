@@ -1,0 +1,11 @@
+"use client";
+import Link from "next/link"; import { useState } from "react"; import { getIssue, materials, people } from "@/content/registry"; import { formatDate } from "./material";
+export function PeopleBrowser() {
+  const [query, setQuery] = useState("");
+  const rows = people.map((person) => ({ person, related: materials.filter((m) => m.authors.some((a) => a.personId === person.id) || m.people?.includes(person.id)) })).filter(({ person, related }) => `${person.name} ${person.aliases?.join(" ")} ${person.description} ${related.map((m) => `${m.title} ${m.tags.join(" ")} ${m.issue ? getIssue(m.issue)?.title : ""}`).join(" ")}`.toLowerCase().includes(query.toLowerCase()));
+  return <><label className="search-field"><span>Поиск по людям и материалам</span><input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Имя, роль, материал или тег" /></label><div className="people-list">{rows.map(({ person, related }) => <article id={`person-${person.id}`} key={person.id}><div className="person-summary"><div><h2>{person.name}</h2><p>{person.description}</p><span>{person.occupation} · {person.tags.join(", ")}</span></div><span>{related.length} публикации</span></div><details><summary>Связанные материалы</summary><label className="visually-hidden" htmlFor={`related-${person.id}`}>Поиск внутри списка {person.name}</label><RelatedSearch id={`related-${person.id}`} items={related} personId={person.id} /></details></article>)}</div></>;
+}
+function RelatedSearch({ id, items, personId }: { id: string; items: typeof materials; personId: string }) {
+  const [q, setQ] = useState(""); const shown = items.filter((m) => `${m.title} ${m.tags.join(" ")}`.toLowerCase().includes(q.toLowerCase()));
+  return <><input id={id} type="search" placeholder="Поиск в списке" value={q} onChange={(e) => setQ(e.target.value)} />{shown.map((m) => { const credit = m.authors.find((a) => a.personId === personId); const issue = m.issue ? getIssue(m.issue) : undefined; return <Link className="related-row" href={`/materials/${m.slug}`} key={m.slug}><strong>{m.title}</strong><span>{formatDate(m.publishedAt)} · {issue ? `Выпуск №${issue.number}` : "Самостоятельно"} · {credit?.role ?? "Участник"}</span></Link>; })}</>;
+}

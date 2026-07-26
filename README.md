@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# N-вариант
 
-## Getting Started
+Первая production-ready версия русскоязычного цифрового журнала. Проект построен на Next.js 16 App Router, TypeScript и MDX. Контент хранится в репозитории; CMS, база данных и серверное API не нужны.
 
-First, run the development server:
+## Запуск
+
+Требуется Node.js 20+ и npm.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Основные команды:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run validate   # связи и метаданные контента
+npm test           # инварианты выпусков, поиска и медиа-URL
+npm run typecheck  # строгая проверка TypeScript
+npm run lint
+npm run build      # validate + production build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Как устроен контент
 
-## Learn More
+- `src/content/registry.ts` — типизированные реестры материалов, выпусков, людей, цитат и медиа.
+- `src/content/materials/*.mdx` — полный текст материалов.
+- `src/content/materials.ts` — статическая карта MDX-компонентов для сборки.
+- `src/lib/types.ts` — публичные типы контентной модели.
+- `public/media/` — локальные публичные файлы.
 
-To learn more about Next.js, take a look at the following resources:
+Время чтения хранится в собранном реестре и должно пересчитываться при подготовке материала из объёма очищенного текста (ориентир: 180 слов/мин). Статический поисковый индекс собирается функцией `searchIndex()` из тех же реестров во время сборки, поэтому отдельная команда генерации файла не нужна.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Новый материал
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Создайте `src/content/materials/my-slug.mdx`.
+2. Добавьте импорт в `src/content/materials.ts`.
+3. Добавьте строго типизированную запись в `materials` в `registry.ts`: авторов, теги, даты, видимость архива, заголовки, медиа и поисковый текст.
+4. Добавьте связанных людей и медиа в соответствующие реестры.
+5. Выполните `npm run validate`.
 
-## Deploy on Vercel
+Короткий пример:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```mdx
+<p className="lead">Вводный абзац.</p>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<MediaBlock id="city-grid" caption="Контекстная подпись." />
+
+<h2 id="stable-heading">Заголовок</h2>
+
+Основной текст.
+```
+
+`showInMaterialsArchive: false` скрывает материал из общего архива, но не из выпуска и не отключает его самостоятельный URL.
+
+## Уникальный интерактив
+
+Создайте client-компонент рядом с MDX, импортируйте его непосредственно в материал и не добавляйте в глобальную оболочку:
+
+```mdx
+import MyInteractive from "./MyInteractive";
+
+Обычный текст.
+
+<MyInteractive />
+```
+
+Компонент обязан работать с клавиатуры, учитывать `prefers-reduced-motion`, иметь мобильную раскладку и содержательный fallback в `<noscript>`. Пример — `SignalTuner.tsx`.
+
+## Люди, медиа и YouTube
+
+Люди добавляются в `people`; в материале связь задаётся через `authors` (с ролью) и `people`. Медиа сначала регистрируется в `media`, затем используется по ID через `<MediaBlock id="…" />`. Все записи автоматически попадают в `/gallery` и `/media/[id]`, а `mediaUsages()` строит точные ссылки.
+
+Для YouTube укажите `type: "youtube"`, `youtubeId`, thumbnail, источник и `downloadable: false`. `<YouTubeFacade>` загружает privacy-enhanced player только после действия читателя, без autoplay.
+
+## Выпуски, цитаты и правки
+
+Выпуск добавляется в `issues` как последовательность секций и блоков. Полный материал разрешено включить только в один выпуск; валидация остановит сборку при нарушении. Секции являются будущей границей пагинации, хотя канонический режим сейчас непрерывный.
+
+Цитата регистрируется в `quotes` и повторно используется блоком `{ type: "quote", quote: "id" }` или `<QuoteBlock id="id" />`.
+
+Читательские правки задаются массивом:
+
+```ts
+corrections: [{ date: "2026-08-05", text: "Исправлена фактическая ошибка." }]
+```
+
+## SEO и публикация
+
+Приложение генерирует sitemap, robots, Open Graph metadata, канонические URL и RSS (`/materials.xml`, `/issues.xml`). Перед деплоем задайте `NEXT_PUBLIC_SITE_URL` с публичным origin.
+
+Для Vercel импортируйте репозиторий, выберите каталог проекта и стандартную команду `npm run build`. Публичный контент станет доступен после следующей успешной сборки.
+
+Полная архитектурная спецификация сохранена в [`CN.md`](./CN.md).

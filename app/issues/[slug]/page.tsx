@@ -1,0 +1,17 @@
+import type { Metadata } from "next"; import Image from "next/image"; import Link from "next/link"; import { notFound } from "next/navigation";
+import { getIssue, getMaterial, getMedia, issueMaterials, issues, people } from "@/content/registry"; import { Corrections, formatDate, MaterialBody, MaterialHeader } from "@/components/material"; import { MediaBlock, QuoteBlock } from "@/components/content-blocks"; import { IssueToc } from "@/components/issue-toc";
+export const dynamicParams = false;
+export function generateStaticParams() { return issues.map(({ slug }) => ({ slug })); }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const i = getIssue((await params).slug); if (!i) return {}; return { title: `№${i.number} ${i.title}`, description: i.description, alternates: { canonical: `/issues/${i.slug}` }, openGraph: { title: `№${i.number} ${i.title}`, description: i.description, images: [getMedia(i.cover)?.src ?? ""] } }; }
+export default async function IssuePage({ params }: { params: Promise<{ slug: string }> }) {
+  const issue = getIssue((await params).slug); if (!issue) notFound(); const mats = issueMaterials(issue); const personIds = [...new Set(mats.flatMap((m) => [...m.authors.map((a) => a.personId), ...(m.people ?? [])]))];
+  return <main id="main" className="issue-page"><IssueToc issue={issue} /><article className="issue-flow"><header className="issue-hero"><div><span className="eyebrow">N-вариант · выпуск №{issue.number}</span><h1>{issue.title}</h1><p>{issue.description}</p><div className="meta"><time>{formatDate(issue.publishedAt)}</time><span>{mats.reduce((n, m) => n + m.readingTime, 0)} мин</span><span>{personIds.length} участников</span></div></div><figure id={`media-${issue.cover}`}><Image src={getMedia(issue.cover)?.src ?? ""} alt={getMedia(issue.cover)?.alt ?? ""} width={600} height={780} /></figure></header>
+  <section className="issue-top-toc"><h2>Содержание</h2>{issue.sections.map((s, i) => <Link key={s.id} href={`#section-${s.id}`}><span>0{i + 1}</span>{s.title}</Link>)}</section>
+  {issue.sections.map((section, si) => <section key={section.id} id={`section-${section.id}`} data-toc className="issue-section"><header><span>{String(si + 1).padStart(2, "0")}</span><h2>{section.title}</h2><p>{section.intro}</p></header>{section.blocks.map((block, bi) => {
+    if (block.type === "editorial") return <div className="editorial-note" key={bi}>{block.title && <h3>{block.title}</h3>}<p>{block.text}</p></div>;
+    if (block.type === "quote") return <QuoteBlock key={bi} id={block.quote} />;
+    if (block.type === "media") return <MediaBlock key={bi} id={block.media} caption={block.caption} usageSuffix={`issue-${si}-${bi}`} />;
+    const m = getMaterial(block.material)!; return <article className="embedded-material" key={m.slug} id={`material-${m.slug}`} data-toc><MaterialHeader material={m} compact /><MaterialBody material={m} inIssue /></article>;
+  })}</section>)}
+  <footer className="issue-end"><Corrections items={issue.corrections} /><section><h2>Участники выпуска</h2><div className="people-links">{personIds.map((id) => { const p = people.find((x) => x.id === id); return p && <Link href={`/people#person-${id}`} key={id}>{p.name}<span>{p.occupation}</span></Link>; })}</div></section><dl><dt>Выпуск</dt><dd>№{issue.number}</dd><dt>Опубликован</dt><dd>{formatDate(issue.publishedAt)}</dd><dt>Материалов</dt><dd>{mats.length}</dd></dl></footer></article></main>;
+}

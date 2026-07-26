@@ -1,0 +1,12 @@
+"use client";
+import Link from "next/link"; import { useMemo, useState } from "react"; import { useSearchParams } from "next/navigation"; import type { SearchEntry, SearchType } from "@/lib/types";
+const types: (SearchType | "Все")[] = ["Все", "Выпуск", "Материал", "Человек", "Медиа", "Цитата"];
+function normalize(s: string) { return s.toLowerCase().replace(/ё/g, "е"); }
+function score(entry: SearchEntry, query: string) { const words = normalize(query).split(/\s+/).filter(Boolean); const title = normalize(entry.title), hay = normalize(`${entry.title} ${entry.text} ${entry.tags.join(" ")}`); return words.reduce((n, w) => n + (title.includes(w) ? 8 : hay.includes(w) ? 3 : fuzzy(hay, w) ? 1 : -20), 0); }
+function fuzzy(text: string, word: string) { if (word.length < 4) return false; for (let i = 0; i < word.length; i++) if (text.includes(word.slice(0, i) + word.slice(i + 1))) return true; return false; }
+function Mark({ text, q }: { text: string; q: string }) { const term = q.trim().split(/\s+/)[0]; if (!term) return text; const i = normalize(text).indexOf(normalize(term)); return i < 0 ? text : <>{text.slice(0, i)}<mark>{text.slice(i, i + term.length)}</mark>{text.slice(i + term.length)}</>; }
+export function SearchClient({ index }: { index: SearchEntry[] }) {
+  const initial = useSearchParams().get("q") ?? ""; const [query, setQuery] = useState(initial); const [type, setType] = useState<(typeof types)[number]>("Все");
+  const results = useMemo(() => query.trim() ? index.map((e) => ({ e, score: score(e, query) })).filter(({ e, score }) => score > 0 && (type === "Все" || e.type === type)).sort((a, b) => b.score - a.score) : [], [index, query, type]);
+  return <><label className="search-field"><span>Поиск по всему журналу</span><input autoFocus type="search" value={query} onChange={(e) => { setQuery(e.target.value); history.replaceState(null, "", e.target.value ? `/search?q=${encodeURIComponent(e.target.value)}` : "/search"); }} placeholder="Введите слово или фразу" /></label><div className="filters">{types.map((t) => <button key={t} aria-pressed={t === type} onClick={() => setType(t)}>{t}</button>)}</div><div className="search-results" aria-live="polite">{query && <p>{results.length ? `Найдено: ${results.length}` : "Совпадений не найдено"}</p>}{results.map(({ e }) => <article key={e.id}><span>{e.type}</span><h2><Link href={e.url}><Mark text={e.title} q={query} /></Link></h2><p><Mark text={e.text.slice(0, 190)} q={query} />…</p></article>)}</div></>;
+}

@@ -1,0 +1,3 @@
+import type { Metadata } from "next"; import { Suspense } from "react"; import { SearchClient } from "@/components/search-client"; import { searchIndex } from "@/content/registry";
+export const metadata: Metadata = { title: "Поиск", description: "Полнотекстовый поиск по N-вариант.", alternates: { canonical: "/search" } };
+export default function SearchPage() { return <main id="main" className="page-shell"><header className="page-title"><span className="eyebrow">Статический индекс</span><h1>Поиск</h1></header><Suspense fallback={<p>Загрузка индекса…</p>}><SearchClient index={searchIndex()} /></Suspense></main>; }
