@@ -65,3 +65,23 @@
 [data-theme=dark] .brand-logo-dark{display:block!important}
 .hero-mark{width:clamp(5rem,10vw,9rem);height:auto;aspect-ratio:32/23}
 .footer-brand{display:flex;align-items:center;gap:.55rem}
+
+/* Keep the issue reading flow usable before the global mobile breakpoint. */
+@media(max-width:1180px){
+  .issue-page{display:block;max-width:none;padding:0 24px}
+  .issue-toc{display:none}
+  .mobile-toc{display:block;position:sticky;top:var(--header);z-index:50;background:var(--paper);border-bottom:1px solid var(--line);margin:0 -24px;padding:.6rem 24px}
+  .mobile-toc>button{width:100%;border:0;background:none;text-align:left}
+  .mobile-toc-panel{max-height:60vh;overflow:auto;padding:1rem 0}
+  .mobile-toc-panel ol{padding-left:1.5rem}
+  .mobile-toc-panel button{border:0;background:none;padding:.35rem;text-align:left}
+  .issue-flow{max-width:900px;margin:0 auto}
+  .issue-hero{grid-template-columns:minmax(0,1fr) minmax(220px,280px);gap:clamp(2rem,5vw,4rem)}
+}
+
+@media(max-width:900px){
+  .issue-page{padding-right:20px;padding-left:20px}
+  .mobile-toc{margin-right:-20px;margin-left:-20px;padding-right:20px;padding-left:20px}
+  .issue-flow{max-width:none}
+  .issue-hero{grid-template-columns:1fr}
+}
