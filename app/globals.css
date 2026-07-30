@@ -84,7 +84,15 @@
   .mobile-toc{margin-right:-20px;margin-left:-20px;padding-right:20px;padding-left:20px}
   .issue-flow{max-width:none}
   .issue-hero{grid-template-columns:1fr}
-  .material-header h1,.prose h2,.prose h3{max-width:100%;overflow-wrap:anywhere;hyphens:auto}
+  .reading-page article,.issue-flow,.issue-hero>div,.issue-section>header>*,
+  .embedded-material,.material-header,.prose{min-width:0}
+  .material-header h1,.prose h2,.prose h3,.prose h4,.prose h5,
+  .issue-hero h1,.issue-section>header h2{
+    max-width:100%;
+    overflow-wrap:anywhere;
+    word-break:normal;
+    hyphens:auto
+  }
   .material-header h1{font-size:clamp(2.5rem,13vw,3.5rem)}
   .prose h2{font-size:clamp(2rem,9vw,2.35rem)}
   .prose h3{font-size:clamp(1.5rem,7vw,1.65rem)}
