@@ -19,7 +19,7 @@ export function MaterialBody({ material, inIssue = false }: { material: Material
   return <><div className="prose"><Body /></div>{!inIssue && <Corrections items={material.corrections} />}<Authors material={material} /></>;
 }
 export function Authors({ material }: { material: MaterialMetadata }) {
-  return <details className="authors"><summary>Авторы <span>{material.authors.length}</span></summary><div className="authors-content">{material.authors.map((credit) => { const person = getPerson(credit.personId); return person && <div className="author-row" key={credit.personId}><Link href={`/people#person-${person.id}`}>{person.name}</Link><span>{credit.role}</span><p>{person.description}</p></div>; })}</div></details>;
+  return <details className="authors" open><summary>Авторы <span>{material.authors.length}</span></summary><div className="authors-content">{material.authors.map((credit) => { const person = getPerson(credit.personId); return person && <div className="author-row" key={credit.personId}><Link href={`/people#person-${person.id}`}>{person.name}</Link><span>{credit.role}</span><p>{person.description}</p></div>; })}</div></details>;
 }
 export function IssueBelonging({ material }: { material: MaterialMetadata }) {
   const issue = materialIssue(material); if (!issue) return null;

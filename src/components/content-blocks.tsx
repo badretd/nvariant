@@ -5,13 +5,16 @@ import { useState } from "react";
 import { getMedia, getQuote } from "@/content/registry";
 import { CopyLink } from "./ui";
 
-export function MediaBlock({ id, caption, usageSuffix }: { id: string; caption?: string; usageSuffix?: string }) {
+export function MediaBlock({ id, caption, usageId, usageSuffix }: { id: string; caption?: string; usageId?: string; usageSuffix?: string }) {
   const asset = getMedia(id); if (!asset) return null;
   const anchor = `media-${id}${usageSuffix ? `-${usageSuffix}` : ""}`;
   return <figure id={anchor} className="media-block">
-    {asset.type === "youtube" ? <YouTubeFacade id={id} /> : asset.src ? <Image src={asset.src} alt={asset.alt} width={1400} height={900} sizes="(max-width: 800px) 100vw, 1100px" /> : null}
-    <figcaption><span>{caption ?? asset.description} — {asset.author}.</span> <CopyLink url={`#${anchor}`} label="Ссылка" /></figcaption>
+    {asset.type === "youtube" ? <YouTubeFacade id={id} /> : asset.src ? <Image src={asset.src} alt={asset.alt} width={asset.width ?? 1400} height={asset.height ?? 900} sizes="(max-width: 800px) 100vw, 1100px" /> : null}
+    <figcaption data-usage-id={usageId}><span>{caption ?? asset.description} — {asset.author}. {asset.license}.</span> <span><Link href={`/media/${asset.id}`}>В галерею</Link> · <CopyLink url={`#${anchor}`} label="Ссылка" /></span></figcaption>
   </figure>;
+}
+export function BandcampEmbed({ title, embedUrl, externalUrl }: { title: string; embedUrl: string; externalUrl: string }) {
+  return <figure className="bandcamp-embed"><iframe src={embedUrl} title={title} loading="lazy" allow="encrypted-media" /><figcaption>Альбом на Bandcamp. Если плеер не загрузился, <a href={externalUrl}>откройте релиз на Bandcamp</a>.</figcaption></figure>;
 }
 export function YouTubeFacade({ id }: { id: string }) {
   const asset = getMedia(id); const [active, setActive] = useState(false);

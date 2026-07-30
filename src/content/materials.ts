@@ -1,11 +1,11 @@
-import Gorod from "./materials/gorod-kotoryy-slyshno.mdx";
-import Interfeys from "./materials/interfeys-do-zhesta.mdx";
-import Veshchi from "./materials/veshchi-pomnyat-formu.mdx";
-import Pustota from "./materials/zametka-o-pustote.mdx";
+import Upravlenie from "./materials/upravlenie-komandoy.mdx";
+import Serial from "./materials/serial-na-dvoih.mdx";
+import KogdaNeGlavnyy from "./materials/kogda-ty-ne-glavnyy.mdx";
+import Filosofiya from "./materials/filosofiya-n-varianta.mdx";
 
 export const materialBodies = {
-  "gorod-kotoryy-slyshno": Gorod,
-  "interfeys-do-zhesta": Interfeys,
-  "veshchi-pomnyat-formu": Veshchi,
-  "zametka-o-pustote": Pustota,
+  "upravlenie-komandoy": Upravlenie,
+  "serial-na-dvoih": Serial,
+  "kogda-ty-ne-glavnyy": KogdaNeGlavnyy,
+  "filosofiya-n-varianta": Filosofiya,
 };

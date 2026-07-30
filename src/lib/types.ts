@@ -5,6 +5,7 @@ export type MaterialMetadata = {
   slug: string; title: string; description: string; publishedAt: string; updatedAt?: string;
   authors: AuthorCredit[]; people?: string[]; tags: string[]; issue?: string;
   showInMaterialsArchive: boolean; cover?: string; media?: string[]; quoteIds?: string[];
+  mediaUsages?: MediaUsageMetadata[];
   headings: Heading[]; readingTime: number; text: string; corrections?: Correction[];
   seo?: { title?: string; description?: string; image?: string };
 };
@@ -30,10 +31,11 @@ export type Quote = {
 export type MediaType = "image" | "youtube" | "animation";
 export type MediaAsset = {
   id: string; type: MediaType; kind: "cover" | "material" | "person" | "illustration" | "video";
-  title: string; src?: string; youtubeId?: string; thumbnail?: string; alt: string;
+  title: string; src?: string; youtubeId?: string; thumbnail?: string; alt: string; width?: number; height?: number;
   description: string; author: string; source: string; sourceUrl?: string; license: string;
   createdAt: string; downloadable: boolean; tags: string[];
 };
-export type MediaUsage = { mediaId: string; label: string; url: string; context: "issue" | "material" | "person" };
+export type MediaUsageMetadata = { mediaId: string; usageId: string; caption: string; context?: string; placement: "wide" | "inline" };
+export type MediaUsage = { mediaId: string; usageId: string; label: string; url: string; context: "issue" | "material" | "person" };
 export type SearchType = "Выпуск" | "Материал" | "Человек" | "Медиа" | "Цитата";
 export type SearchEntry = { id: string; type: SearchType; title: string; text: string; url: string; tags: string[] };

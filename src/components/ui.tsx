@@ -1,15 +1,23 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const links = [["Главная", "/"], ["Выпуски", "/issues"], ["Материалы", "/materials"], ["Люди", "/people"], ["Галерея", "/gallery"], ["Поиск", "/search"], ["О проекте", "/about"]];
 
+export function Logo({ className = "" }: { className?: string }) {
+  return <span className={`brand-logo ${className}`.trim()} aria-hidden="true">
+    <Image className="brand-logo-light" src="/brand/nvariant-logo-light.svg" alt="" width={32} height={23} priority />
+    <Image className="brand-logo-dark" src="/brand/nvariant-logo-dark.svg" alt="" width={32} height={23} priority />
+  </span>;
+}
+
 export function Header() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   return <header className="site-header">
-    <Link className="logo" href="/" aria-label="N-вариант — главная">[N]</Link>
+    <Link className="logo" href="/" aria-label="N-вариант — главная"><Logo /></Link>
     <button className="menu-button" aria-expanded={open} aria-controls="global-nav" onClick={() => setOpen(!open)}>Меню</button>
     <nav id="global-nav" aria-label="Основная навигация" className={open ? "nav open" : "nav"}>
       {links.map(([label, href]) => <Link key={href} href={href} aria-current={path === href || (href !== "/" && path.startsWith(href)) ? "page" : undefined} onClick={() => setOpen(false)}>{label}</Link>)}
@@ -21,11 +29,13 @@ function ThemeToggle() {
   useEffect(() => {
     const saved = localStorage.getItem("n-theme");
     const dark = saved === "dark" || (!saved && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    const theme = dark ? "dark" : "light";
+    document.documentElement.dataset.theme = theme;
   }, []);
   function toggle() {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next; localStorage.setItem("n-theme", next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("n-theme", next);
   }
   return <button className="theme-button" onClick={toggle} aria-label="Переключить светлую и тёмную тему">Тема</button>;
 }
