@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "validate": "node scripts/validate.mjs",
+    "validate:media": "node scripts/validate-media.mjs",
     "test": "node tests/content.test.mjs"
   },
   "dependencies": {

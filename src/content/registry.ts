@@ -1,193 +1,89 @@
 import type { Issue, MaterialMetadata, MediaAsset, MediaUsage, Person, Quote, SearchEntry } from "@/lib/types";
+import { searchTexts } from "./search-text";
+import { plotSearchText } from "./plot";
 
 export const people: Person[] = [
-  {
-    id: "imran-badretdinov",
-    name: "Имран Бадретдинов",
-    photo: "hi-imran",
-    description: "Программист, режиссёр и оператор; автор материалов о собственных творческих проектах и N-варианте.",
-    occupation: "Автор, программист, режиссёр, оператор",
-    aliases: ["logka"],
-    tags: ["N-вариант", "сериалы", "музыка"],
-  },
-  {
-    id: "klim-gulyaev",
-    name: "Клим Гуляев",
-    photo: "hi-klim",
-    description: "Соавтор сериала «Выжить в школе» и сооснователь N-варианта.",
-    occupation: "Соавтор, сооснователь",
-    tags: ["N-вариант", "сериалы"],
-  },
+  { id: "imran-badretdinov", name: "Имран Бадретдинов", photo: "portrait-imran", description: "Главный редактор и основатель N-варианта.", occupation: "Автор, главный редактор, сооснователь", aliases: ["logka"], tags: ["N-вариант", "Сериалы", "Музыка"] },
+  { id: "klim-gulyaev", name: "Клим Гуляев", photo: "portrait-klim", description: "Сооснователь N-варианта и актёр сериалов «Исповедь школьника» и «Выжить в школе».", occupation: "Автор, актёр, сооснователь", tags: ["N-вариант", "Сериалы", "Воспоминания"] },
+  { id: "samad-yusupov", name: "Самад Юсупов", photo: "portrait-samad", description: "Независимый эксперт первого выпуска N-варианта.", occupation: "Независимый эксперт", tags: ["N-вариант"] },
 ];
 
-export const quotes: Quote[] = [];
+export const quotes: Quote[] = [{
+  id: "shest-roley-vyzov",
+  text: "Шесть ролей — это был вызов. Я его принял и прошёл. Криво, с ошибками, уставший, но прошёл.",
+  person: "klim-gulyaev",
+  sourceTitle: "6 ролей",
+  sourceUrl: "/materials/shest-roley#zaklyuchenie",
+  sourceMaterial: "shest-roley",
+}];
 
 export const media: MediaAsset[] = [
-  {
-    id: "is-demo-shot", type: "image", kind: "cover", title: "Кадр из сериала «Исповедь школьника»",
-    src: "/media/is-demo-shot.png", width: 1280, height: 720,
-    alt: "Два человека направляют игрушечные пистолеты на подростка с поднятыми руками; в одной руке у него банкноты",
-    description: "Сохранившийся стоп-кадр из пилотной серии «Исповеди школьника».",
-    author: "Имран Бадретдинов", source: "Личный архив", license: "CC BY 4.0",
-    createdAt: "2023-04-09", downloadable: true, tags: ["сериал", "Исповедь школьника", "выпуск №1"],
-  },
-  {
-    id: "vs-edit-process", type: "image", kind: "material", title: "Монтаж сериала «Выжить в школе»",
-    src: "/media/vs-edit-process.png", width: 1280, height: 720,
-    alt: "Экран монтажной программы DaVinci Resolve с многослойной видео- и аудиодорожкой сериала «Выжить в школе»",
-    description: "Процесс монтажа третьей серии «Выжить в школе».",
-    author: "Имран Бадретдинов", source: "Личный архив", license: "CC BY 4.0",
-    createdAt: "2024-09-07", downloadable: true, tags: ["сериал", "монтаж", "Выжить в школе"],
-  },
-  {
-    id: "hi-imran", type: "image", kind: "person", title: "Из работы над «Выжить в школе»",
-    src: "/media/hi-imran.png", width: 960, height: 1280,
-    alt: "Имран Бадретдинов сидит в комнате и держит перед собой игрушечный пистолет",
-    description: "Фотография Имрана Бадретдинова со съёмок «Выжить в школе».",
-    author: "Имран Бадретдинов", source: "Личный архив", license: "CC BY 4.0",
-    createdAt: "2024-09-26", downloadable: true, tags: ["портрет", "Имран Бадретдинов", "Выжить в школе"],
-  },
-  {
-    id: "hi-klim", type: "image", kind: "person", title: "Из работы над [УДАЛЕНО]",
-    src: "/media/hi-klim.png", width: 720, height: 1280,
-    alt: "Клим Гуляев в тёмном спортивном костюме и жёлтой шапке стоит у стены здания",
-    description: "Фотография Клима Гуляева из личного архива.",
-    author: "Имран Бадретдинов", source: "Личный архив", license: "CC BY 4.0",
-    createdAt: "2024-10-07", downloadable: true, tags: ["портрет", "Клим Гуляев"],
-  },
+  { id: "issue-cover", type: "image", kind: "cover", title: "Обложка выпуска №1 «Опыт прошлых лет»", src: "/media/issue-cover.png", width: 1080, height: 1440, alt: "Красно-чёрная обложка выпуска №1 «Опыт прошлых лет» с крупной типографикой N-варианта", description: "Обложка актуальной версии первого выпуска.", author: "Имран Бадретдинов", source: "Редакция N-варианта", license: "Все права защищены", createdAt: "2026-07-30", downloadable: false, tags: ["N-вариант", "Выпуск №1"] },
+  { id: "is-demo-shot", type: "image", kind: "material", title: "Кадр из сериала «Исповедь школьника»", src: "/media/is-demo-shot.png", width: 1280, height: 720, alt: "Двое людей направляют игрушечное оружие на человека, стоящего с поднятыми руками и банкнотами", description: "Сохранившийся кадр из сериала «Исповедь школьника».", author: "Имран Бадретдинов", source: "Личный архив", license: "CC-BY 4.0", createdAt: "2023-04-09", downloadable: true, tags: ["Сериалы", "Персона"] },
+  { id: "klim-report", type: "image", kind: "material", title: "Кадр из первого интервью Клима Гуляева", src: "/media/klim-report.jpg", width: 1920, height: 1080, alt: "Клим Гуляев задумчиво стоит на размытом в движении фоне ночного города", description: "Кадр из первого интервью Клима Гуляева, сохранившийся в личном архиве.", author: "Имран Бадретдинов", source: "Личный архив", license: "CC-BY 4.0", createdAt: "2023-03-25", downloadable: true, tags: ["LOST MEDIA", "Персона"] },
+  { id: "cave", type: "image", kind: "material", title: "Кадр из 4 серии сериала «Выжить в школе»", src: "/media/cave.png", width: 369, height: 534, alt: "Имран Бадретдинов ведёт съёмку в каменной пещере для невыпущенной серии", description: "Кадр из пещеры для четвёртого эпизода сериала «Выжить в школе».", author: "Имран Бадретдинов", source: "Личный архив", license: "CC-BY 4.0", createdAt: "2024-09-08", downloadable: true, tags: ["Сериалы", "Персона"] },
+  { id: "editing", type: "image", kind: "material", title: "Монтаж сериала «Выжить в школе»: финальный рендер", src: "/media/editing.jpg", width: 1280, height: 720, alt: "На мониторе открыт сложный проект DaVinci Resolve с множеством видео- и аудиодорожек", description: "Финальный монтаж и многослойный саунд-дизайн сериала «Выжить в школе».", author: "Имран Бадретдинов", source: "Личный архив", license: "CC-BY 4.0", createdAt: "2024-09-07", downloadable: true, tags: ["Сериалы", "Производственный ад"] },
+  { id: "hi-imran", type: "image", kind: "material", title: "Из работы над «Выжить в школе»", src: "/media/hi-imran.jpg", width: 960, height: 1280, alt: "Имран Бадретдинов целится в сторону камеры из игрушечного пистолета", description: "Фотография со съёмок сериала «Выжить в школе».", author: "Клим Гуляев", source: "Telegram", license: "CC-BY 4.0", createdAt: "2024-09-26", downloadable: true, tags: ["Сериалы", "Персона"] },
+  { id: "hi-klim", type: "image", kind: "material", title: "Из работы над 2 сезоном сериала «Исповедь школьника»", src: "/media/hi-klim.jpg", width: 1280, height: 960, alt: "Клим Гуляев едет на электросамокате прямо в сторону оператора", description: "Фотография со съёмок второго сезона сериала «Исповедь школьника».", author: "Имран Бадретдинов", source: "Telegram", license: "CC-BY 4.0", createdAt: "2024-11-10", downloadable: true, tags: ["Сериалы", "Персона"] },
+  { id: "portrait-imran", type: "image", kind: "person", title: "Имран Бадретдинов", src: "/media/portrait-imran.jpg", width: 810, height: 1080, alt: "Портрет Имрана Бадретдинова для страницы участника N-варианта", description: "Редакционный портрет Имрана Бадретдинова.", author: "Личный архив", source: "Личный архив", license: "Все права защищены", createdAt: "2026-07-30", downloadable: false, tags: ["Персона", "N-вариант"] },
+  { id: "portrait-klim", type: "image", kind: "person", title: "Клим Гуляев", src: "/media/portrait-klim.jpg", width: 960, height: 1280, alt: "Портрет Клима Гуляева для страницы участника N-варианта", description: "Редакционный портрет Клима Гуляева.", author: "Личный архив", source: "Личный архив", license: "Все права защищены", createdAt: "2026-07-30", downloadable: false, tags: ["Персона", "N-вариант"] },
+  { id: "portrait-samad", type: "image", kind: "person", title: "Самад Юсупов", src: "/media/portrait-samad.jpg", width: 1080, height: 734, alt: "Портрет Самада Юсупова для страницы участника N-варианта", description: "Редакционный портрет Самада Юсупова.", author: "Личный архив", source: "Личный архив", license: "Все права защищены", createdAt: "2026-07-30", downloadable: false, tags: ["Персона", "N-вариант"] },
 ];
 
-const materialRecords: MaterialMetadata[] = [
-  {
-    slug: "upravlenie-komandoy", title: "Управление командой",
-    description: "О том, как я создал и уничтожил команду из примерно десяти человек.",
-    publishedAt: "2026-07-26", authors: [{ personId: "imran-badretdinov", role: "Автор" }],
-    tags: ["лидерство", "сериалы", "N-вариант"], issue: "opyt-proshlyh-let",
-    showInMaterialsArchive: true, cover: "is-demo-shot", media: ["is-demo-shot"],
-    mediaUsages: [{ mediaId: "is-demo-shot", usageId: "is-demo-shot-usage", caption: "Кадр из сериала «Исповедь школьника»", placement: "wide" }],
-    headings: [{ id: "v-chem-delo", title: "В чём дело?", level: 2 }, { id: "sovet", title: "Совет", level: 2 }],
-    readingTime: 1,
-    text: `Сколько себя помню, я всегда везде хотел быть главным, несмотря на свою тотальную безответственность. В любой игре я всегда стремился быть лидером. И вот в 2023 году мне выпала возможность продюсировать сериал по идее моего друга. Я специально не упоминаю его, потому что получилось очень плохо.
-В чём дело? Сейчас вы нигде не сможете посмотреть полноценную серию, потому что серии были удалены из сети. Не по моей воле, но это уже неважно. Единственное, что осталось от сериала, — несколько стоп-кадров из пилотной серии.
-Спустя время могу сказать, что сериал очень плохо состарился. Мы все уже давно изменились настолько, что не узнаём тех людей на экране, которыми когда-то сами были. Боевые сцены поставлены особенно отвратительно. Ну и актёрская игра тоже удивляет.
-Самое удивительное в этой ситуации то, что после просмотра результата первой серии мы пошли снимать вторую. На тот момент нам всё понравилось. Я думаю, дело в том, что все, кто принимал участие в создании сериала, полюбили его именно за тот труд, который они в него вложили. Но со временем это чувство ослабевало, а желание всё удалить нарастало.
-Совет. Наша команда распалась из-за разногласий в видении сюжета. Через время я понимаю, что мне стоило прислушаться к команде и идти на компромиссы, чтобы удержать проект на плаву. Что случилось бы, если бы я тогда поступил по-другому? Никто уже не узнает.
-И если вы занимаетесь чем-то подобным в качестве лидера, то всегда берите критически важные вопросы на себя, а не делегируйте создание главного медиа человеку, у которого может появиться желание всё удалить.`,
-    seo: { description: "Личный опыт лидерства, распада творческой команды и запоздалый разговор о компромиссах." },
-  },
-  {
-    slug: "serial-na-dvoih", title: "Сериал на двоих",
-    description: "Как наше дуо создавало свой личный бренд.",
-    publishedAt: "2026-07-26", authors: [{ personId: "imran-badretdinov", role: "Автор" }, { personId: "klim-gulyaev", role: "Соавтор проекта" }],
-    tags: ["производственный ад", "сериалы", "N-вариант"], issue: "opyt-proshlyh-let",
-    showInMaterialsArchive: true, cover: "vs-edit-process", media: ["vs-edit-process"],
-    mediaUsages: [{ mediaId: "vs-edit-process", usageId: "vs-edit-usage", caption: "Монтаж сериала «Выжить в школе»", placement: "wide" }],
-    headings: [{ id: "pro-delegirovanie", title: "Про делегирование", level: 2 }],
-    readingTime: 1,
-    text: `2 сентября 2024 года, в первый учебный день, на новом тогда телеграм-канале «Выжить в школе» выходит одноимённый сериал. Это был хоррор с элементами голосования зрителей. После каждой серии появлялось голосование, которое решало, куда дальше пойдёт сюжет. Всего было выпущено три серии и одна утерянная под номером четыре.
-Сериал делали вместе с Климом Гуляевым. Первую серию сделали за один день, без особого напряга. Вторую монтировал уже я на компьютере два дня. А третью мы делали с жесточайшими переработками до часа ночи, лишь бы успеть домонтировать, снять и выложить всё за три дня.
-Мне очень понравилось работать над ним. Хоть он и собрал меньше просмотров, чем «Исповедь школьника», но всё же это хороший сериал, за который мне до сих пор не стыдно.
-Про делегирование. Чем больше я делал сам, тем хуже в итоге получалось. Это заметно по убыванию вайба с первой по третью серию. Под конец монтаж стал явно лучше, но это уже не то. Я не умел делать хорроры, и лучше было делегировать всё это прошаренному человеку. Но что случилось, то случилось.
-Пересмотрел третью серию во время написания этой статьи и понял, что саунд-дизайн и правда, без иронии, здесь на высоте. Все звуки воссозданы с нуля, потому что записывать звук возможности не было. Это очень круто.
-И да, именно тогда я понял, что не обязан уметь делать абсолютно всё, ведь можно просто дать задачу, с которой ты плохо справляешься, другому человеку. Удивительно!`,
-  },
-  {
-    slug: "kogda-ty-ne-glavnyy", title: "Когда ты не главный",
-    description: "Работа в команде без лидерской роли.",
-    publishedAt: "2026-07-26", authors: [{ personId: "imran-badretdinov", role: "Автор музыки и текста" }],
-    tags: ["игры", "музыка", "logka"], issue: "opyt-proshlyh-let",
-    showInMaterialsArchive: true, media: [],
-    headings: [], readingTime: 1,
-    text: `Какой же кайф работать не 24/7. Хотя даже если ты работаешь 24/7, но имеешь только часть ответственности за проект, то это тоже кайф, я считаю. Я работал над OST для игры «Копия» от spacepond. Сделал 11 треков за две недели и не пожалел. После ещё примерно месяца работы я смог собрать семь лучших, которые попали в мой первый релиз под основным ником logka. Плеер с Bandcamp позволяет послушать его, не выходя с сайта.
-Получилось как-то так. Ну а ещё да: игра выйдет только в 2027 году, походу. Но мы не отчаиваемся. Хотел бы рассказать ещё про вечер в день релиза альбома. Тогда мы собрались с друзьями в дискорде и послушали все треки перед релизом. Это был самый вайбовый день в моей жизни. И да, возможно, в будущем этот материал обновится и статья перестанет быть бесполезной саморекламой.`,
-  },
-  {
-    slug: "filosofiya-n-varianta", title: "Философия N-варианта",
-    description: "Почему N-вариант — это архив попыток, а не гонка за вниманием.",
-    publishedAt: "2026-07-26", authors: [{ personId: "imran-badretdinov", role: "Автор исходной идеи" }],
-    tags: ["N-вариант", "ИИ", "редакция"], issue: "opyt-proshlyh-let",
-    showInMaterialsArchive: true, media: [],
-    headings: [], readingTime: 1,
-    text: `Интернет редко поощряет медленное чтение.
-Большинство сайтов хотят удержать внимание ещё на секунду дольше. Алгоритмы предлагают следующий материал раньше, чем человек успевает закончить предыдущий. Метрики измеряют клики, просмотры, удержание, время на странице. Постепенно становится проще создавать не то, что хочется исследовать, а то, что с большей вероятностью будет замечено.
-Это не обвинение алгоритмам. Они делают то, для чего были созданы. Но у любой системы оптимизации есть побочный эффект: она постепенно начинает влиять не только на распространение идей, но и на их рождение.
-Именно поэтому появился N-вариант.
-Это не новостной сайт, не блог и не попытка выиграть гонку за внимание. Здесь материалы не публикуются потому, что их пора выпускать. Они появляются тогда, когда появляется мысль, которую нельзя оставить незаписанной.
-Каждый выпуск — это законченная композиция. Отдельные материалы могут существовать самостоятельно, но внутри выпуска они становятся частью большего разговора. Здесь важен не только текст, но и его соседство с другими текстами, иллюстрациями, цитатами и идеями.
-Название «N-вариант» выбрано не случайно. В математике и программировании буквой N часто обозначают неизвестное количество. Не ответ, а пространство возможных ответов. Новый вариант решения. Следующую попытку. Продолжение исследования.
-Этот сайт устроен похожим образом. Он не пытается сформулировать окончательные выводы. Скорее, он собирает варианты понимания мира, технологий, культуры и творчества.
-Здесь не существует требования всегда быть правым. Если спустя время материал окажется неполным или неточным, он будет исправлен. История изменений останется открытой. Ошибка не воспринимается как повод удалить мысль — она становится частью процесса её уточнения. Поэтому на сайте есть раздел правок.
-Ещё одна особенность проекта — уважение к источникам. Каждая фотография, иллюстрация, видео или цитата сопровождаются метаданными: авторством, лицензией, происхождением и контекстом использования. Галерея существует не как украшение, а как архив визуального материала, где каждое изображение можно проследить до места, в котором оно было использовано.
-Технологии здесь — не тема сами по себе. Меня интересует не только то, что можно создать, но и почему появляется желание создавать именно это. Какие идеи рождаются из любопытства, какие — из необходимости, а какие — из стремления соответствовать ожиданиям окружающих.
-Вероятно, большинство проектов, о которых будет рассказано здесь, никогда не станут массовыми. Некоторые окажутся неудачными. Некоторые будут существовать всего несколько недель. Другие изменятся до неузнаваемости. Это нормально.
-Творчество не обязано быть линейным. Исследование редко движется по прямой.
-Поэтому N-вариант — это не архив успехов. Это архив попыток.
-Если хотя бы одна опубликованная здесь идея подтолкнёт кого-то сделать собственный, более удачный вариант, значит, она уже выполнила свою задачу.`,
-  },
+const commonExpert = { personId: "samad-yusupov", role: "Независимый эксперт" };
+const records: Omit<MaterialMetadata, "readingTime">[] = [
+  { slug: "mne-vsegda-hotelos-byt-glavnym", title: "Мне всегда хотелось быть главным", description: "Почему человек, который всегда хотел быть главным, постепенно начал искать способы отвечать только за часть работы.", publishedAt: "2026-08-02", authors: [{ personId: "imran-badretdinov", role: "Автор" }, commonExpert], tags: ["Истории", "Сериалы", "N-вариант"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, cover: "is-demo-shot", media: ["is-demo-shot"], mediaUsages: [{ mediaId: "is-demo-shot", usageId: "is-demo-shot-usage", caption: "Кадр из сериала «Исповедь школьника»", placement: "wide" }], headings: [{ id: "nastoyashchee", title: "Настоящее", level: 2 }, { id: "pochemu-ya-nachal", title: "Почему я начал", level: 3 }, { id: "pochemu-eto-interesno", title: "Почему это интересно", level: 3 }], text: searchTexts["mne-vsegda-hotelos-byt-glavnym"] },
+  { slug: "upravlenie-komandoy", title: "Управление командой", description: "Как желание сохранить полный контроль разрушило коллективный проект.", publishedAt: "2026-08-02", authors: [{ personId: "imran-badretdinov", role: "Автор" }, { personId: "klim-gulyaev", role: "Актёр сериала" }, commonExpert], people: ["klim-gulyaev"], tags: ["Истории", "Сериалы", "Лидерство", "N-вариант"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, cover: "klim-report", media: ["klim-report"], quoteIds: ["shest-roley-vyzov"], mediaUsages: [{ mediaId: "klim-report", usageId: "klim-report-usage", caption: "Кадр из первого интервью Клима Гуляева (LOST MEDIA)", placement: "wide" }], headings: [{ id: "nachalo", title: "Начало", level: 2 }, { id: "serial", title: "Сериал", level: 2 }, { id: "komandnaya-rabota", title: "Командная работа", level: 2 }, { id: "itog", title: "Итог", level: 2 }], text: searchTexts["upravlenie-komandoy"] },
+  { slug: "shest-roley", title: "6 ролей", description: "Воспоминания одного из актёров сериала «Исповедь школьника».", publishedAt: "2026-08-02", authors: [{ personId: "klim-gulyaev", role: "Автор" }, commonExpert], tags: ["Воспоминания", "Сериалы"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, media: [], headings: [{ id: "moe-sostoyanie", title: "Моё состояние", level: 3 }, { id: "chto-ya-ponyal", title: "Что я понял", level: 3 }, { id: "zaklyuchenie", title: "Заключение", level: 3 }], text: searchTexts["shest-roley"] },
+  { slug: "serial-na-dvoih", title: "Сериал на двоих", description: "Как рост технического качества уничтожил атмосферу.", publishedAt: "2026-08-02", authors: [{ personId: "imran-badretdinov", role: "Автор" }, commonExpert], people: ["klim-gulyaev"], tags: ["Истории", "Сериалы", "Производственный ад", "N-вариант"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, cover: "editing", media: ["cave", "editing"], mediaUsages: [{ mediaId: "cave", usageId: "cave-usage", caption: "Кадр из пещеры для невыпущенного 4 эпизода сериала «Выжить в школе»", placement: "wide" }, { mediaId: "editing", usageId: "editing-usage", caption: "Монтаж сериала «Выжить в школе»: финальный рендер", placement: "wide" }], headings: [{ id: "ideya", title: "Идея", level: 2 }, { id: "reaktsiya-auditorii", title: "Реакция аудитории", level: 2 }, { id: "proizvodstvennyy-ad", title: "Производственный ад", level: 2 }, { id: "zaklyuchenie", title: "Заключение", level: 2 }], text: `${searchTexts["serial-na-dvoih"]} ${plotSearchText}` },
+  { slug: "kogda-ty-ne-glavnyy", title: "Когда ты не главный", description: "Как я работал в команде, не будучи главным.", publishedAt: "2026-08-02", authors: [{ personId: "imran-badretdinov", role: "Автор" }, commonExpert], tags: ["Истории", "Музыка", "N-вариант"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, media: [], headings: [{ id: "s-chego-vse-nachalos", title: "С чего всё началось", level: 2 }, { id: "chto-ya-sdelal", title: "Что я сделал", level: 2 }], text: searchTexts["kogda-ty-ne-glavnyy"] },
+  { slug: "osnovanie-n-varianta", title: "Основание N-варианта", description: "Как мы создавали N-вариант.", publishedAt: "2026-08-02", authors: [{ personId: "imran-badretdinov", role: "Автор" }, commonExpert], people: ["klim-gulyaev", "samad-yusupov"], tags: ["N-вариант"], issue: "opyt-proshlyh-let", showInMaterialsArchive: true, cover: "hi-imran", media: ["hi-imran", "hi-klim"], mediaUsages: [{ mediaId: "hi-imran", usageId: "hi-imran-usage", caption: "Из работы над «Выжить в школе»", placement: "wide" }, { mediaId: "hi-klim", usageId: "hi-klim-usage", caption: "Из работы над 2 сезоном сериала «Исповедь школьника»", placement: "wide" }], headings: [{ id: "privet", title: "Привет", level: 2 }, { id: "osnovateli", title: "Основатели", level: 2 }, { id: "workflow", title: "Немного о нашем workflow", level: 2 }], text: searchTexts["osnovanie-n-varianta"] },
 ];
 
 export function calculateReadingTime(text: string) {
-  const words = text.trim().split(/\s+/u).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 180));
+  return Math.max(1, Math.ceil(text.trim().split(/\s+/u).filter(Boolean).length / 180));
 }
-export const materials: MaterialMetadata[] = materialRecords.map((material) => ({ ...material, readingTime: calculateReadingTime(material.text) }));
+export const materials: MaterialMetadata[] = records.map((material) => ({ ...material, readingTime: calculateReadingTime(material.text) }));
 
 export const issues: Issue[] = [{
-  number: 1,
-  slug: "opyt-proshlyh-let",
-  title: "Опыт прошлых лет",
-  description: "Истории о контроле, делегировании и попытках не уничтожить идею в процессе её создания.",
-  publishedAt: "2026-07-26",
-  cover: "is-demo-shot",
+  number: 1, slug: "opyt-proshlyh-let", title: "Опыт прошлых лет",
+  description: "Истории о желании контролировать всё, перегрузке, делегировании, ограниченной ответственности и создании собственной площадки.",
+  publishedAt: "2026-08-02", cover: "issue-cover",
   sections: [
-    {
-      id: "iz-moego-opyta", title: "Из моего опыта", intro: "Важнейший период в моей жизни.",
-      blocks: [
-        { type: "material", material: "upravlenie-komandoy" },
-        { type: "material", material: "serial-na-dvoih" },
-        { type: "material", material: "kogda-ty-ne-glavnyy" },
-      ],
-    },
-    {
-      id: "n-variant", title: "N-вариант", intro: "Почему это место стало архивом попыток.",
-      blocks: [{ type: "material", material: "filosofiya-n-varianta" }],
-    },
+    { id: "vstuplenie", title: "Вступление", intro: "От желания быть главным — к вопросу о разделении ответственности.", blocks: [{ type: "material", material: "mne-vsegda-hotelos-byt-glavnym" }] },
+    { id: "kontrol", title: "Глава I. Контроль", intro: "Коллективный проект, шесть ролей и цена полного контроля.", blocks: [{ type: "material", material: "upravlenie-komandoy" }, { type: "material", material: "shest-roley" }] },
+    { id: "otvetstvennost", title: "Глава II. Перегрузка и ограниченная ответственность", intro: "Как техническое качество вытесняет атмосферу — и почему иногда лучше не быть главным.", blocks: [{ type: "material", material: "serial-na-dvoih" }, { type: "material", material: "kogda-ty-ne-glavnyy" }] },
+    { id: "novoe-nachalo", title: "Глава III. Новое начало", intro: "Создание собственной площадки для опыта, попыток и новых вариантов.", blocks: [{ type: "material", material: "osnovanie-n-varianta" }] },
   ],
-  seo: { title: "№1. Опыт прошлых лет", description: "Истории о контроле, делегировании и попытках не уничтожить идею в процессе её создания.", image: "/media/is-demo-shot.png" },
+  seo: { title: "№1. Опыт прошлых лет", description: "Контроль, перегрузка, делегирование, ограниченная ответственность и создание N-варианта.", image: "/media/issue-cover.png" },
 }];
 
 export function getMaterial(slug: string) { return materials.find((item) => item.slug === slug); }
 export function getIssue(slug: string) { return issues.find((item) => item.slug === slug); }
 export function getPerson(id: string) { return people.find((item) => item.id === id); }
 export function getMedia(id: string) { return media.find((item) => item.id === id); }
-export function getQuote(id: string) { return quotes.find((quote) => quote.id === id); }
+export function getQuote(id: string) { return quotes.find((item) => item.id === id); }
 export function materialIssue(material: MaterialMetadata) { return material.issue ? getIssue(material.issue) : undefined; }
 export function issueMaterials(issue: Issue) {
-  return issue.sections.flatMap((section) => section.blocks
-    .filter((block): block is Extract<typeof block, { type: "material" }> => block.type === "material")
-    .map((block) => getMaterial(block.material)!));
+  return issue.sections.flatMap((section) => section.blocks.filter((block): block is Extract<typeof block, { type: "material" }> => block.type === "material").map((block) => getMaterial(block.material)!));
 }
 export function mediaUsages(id: string): MediaUsage[] {
   const usages: MediaUsage[] = [];
-  for (const material of materials) {
-    for (const usage of material.mediaUsages ?? []) if (usage.mediaId === id) {
-      usages.push({ mediaId: id, usageId: usage.usageId, label: material.title, url: `/materials/${material.slug}#media-${id}`, context: "material" });
-      const issue = materialIssue(material);
-      if (issue) usages.push({ mediaId: id, usageId: `${usage.usageId}-issue`, label: `№${issue.number} «${issue.title}»: ${material.title}`, url: `/issues/${issue.slug}#media-${id}`, context: "issue" });
-    }
+  for (const material of materials) for (const usage of material.mediaUsages ?? []) if (usage.mediaId === id) {
+    usages.push({ mediaId: id, usageId: usage.usageId, label: material.title, url: `/materials/${material.slug}#media-${usage.usageId}`, context: "material" });
+    const issue = materialIssue(material);
+    if (issue) usages.push({ mediaId: id, usageId: `${usage.usageId}-issue`, label: `№${issue.number} «${issue.title}»: ${material.title}`, url: `/issues/${issue.slug}#media-${usage.usageId}`, context: "issue" });
   }
   for (const issue of issues) if (issue.cover === id) usages.push({ mediaId: id, usageId: `${id}-cover`, label: `Обложка выпуска №${issue.number} «${issue.title}»`, url: `/issues/${issue.slug}#media-${id}-cover`, context: "issue" });
-  for (const person of people) if (person.photo === id) usages.push({ mediaId: id, usageId: `${id}-portrait`, label: person.name, url: `/people#media-${id}`, context: "person" });
+  for (const person of people) if (person.photo === id) usages.push({ mediaId: id, usageId: `${id}-portrait`, label: person.name, url: `/people#person-${person.id}`, context: "person" });
   return usages;
 }
 export function searchIndex(): SearchEntry[] {
   return [
-    ...issues.flatMap((issue) => [
-      { id: `issue-${issue.slug}`, type: "Выпуск" as const, title: `№${issue.number} ${issue.title}`, text: `${issue.description} ${issue.sections.map((section) => `${section.title} ${section.intro ?? ""}`).join(" ")}`, url: `/issues/${issue.slug}`, tags: [] },
-      ...issue.sections.map((section) => ({ id: `section-${issue.slug}-${section.id}`, type: "Выпуск" as const, title: `${issue.title}: ${section.title}`, text: section.intro ?? "", url: `/issues/${issue.slug}#section-${section.id}`, tags: [] })),
-    ]),
-    ...materials.map((material) => ({ id: `material-${material.slug}`, type: "Материал" as const, title: material.title, text: `${material.description} ${material.text} ${material.headings.map((heading) => heading.title).join(" ")} ${material.authors.map((author) => getPerson(author.personId)?.name).join(" ")} ${(material.mediaUsages ?? []).map((usage) => usage.caption).join(" ")}`, url: `/materials/${material.slug}`, tags: material.tags })),
-    ...people.map((person) => ({ id: `person-${person.id}`, type: "Человек" as const, title: person.name, text: `${person.aliases?.join(" ") ?? ""} ${person.description} ${person.occupation} ${materials.filter((material) => material.authors.some((author) => author.personId === person.id) || material.people?.includes(person.id)).map((material) => `${material.title} ${material.tags.join(" ")}`).join(" ")}`, url: `/people#person-${person.id}`, tags: person.tags })),
-    ...media.map((asset) => ({ id: `media-${asset.id}`, type: "Медиа" as const, title: asset.title, text: `${asset.description} ${asset.alt} ${asset.author} ${materials.flatMap((material) => material.mediaUsages ?? []).filter((usage) => usage.mediaId === asset.id).map((usage) => usage.caption).join(" ")}`, url: `/media/${asset.id}`, tags: asset.tags })),
+    ...issues.map((issue) => ({ id: `issue-${issue.slug}`, type: "Выпуск" as const, title: `№${issue.number} ${issue.title}`, text: `${issue.description} ${issue.sections.map((section) => `${section.title} ${section.intro ?? ""}`).join(" ")}`, url: `/issues/${issue.slug}`, tags: [] })),
+    ...materials.map((material) => ({ id: `material-${material.slug}`, type: "Материал" as const, title: material.title, text: `${material.description} ${material.text} ${material.authors.map((author) => getPerson(author.personId)?.name ?? "").join(" ")} ${materialIssue(material)?.title ?? ""} №${materialIssue(material)?.number ?? ""}`, url: `/materials/${material.slug}`, tags: material.tags })),
+    ...people.map((person) => ({ id: `person-${person.id}`, type: "Человек" as const, title: person.name, text: `${person.aliases?.join(" ") ?? ""} ${person.description} ${person.occupation}`, url: `/people#person-${person.id}`, tags: person.tags })),
+    ...media.map((asset) => ({ id: `media-${asset.id}`, type: "Медиа" as const, title: asset.title, text: `${asset.description} ${asset.alt} ${asset.author} ${asset.source}`, url: `/media/${asset.id}`, tags: asset.tags })),
+    ...quotes.map((quote) => ({ id: `quote-${quote.id}`, type: "Цитата" as const, title: quote.sourceTitle, text: quote.text, url: quote.sourceUrl, tags: [] })),
   ];
 }

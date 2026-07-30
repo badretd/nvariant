@@ -53,7 +53,7 @@ for (const match of registry.matchAll(/\balt:\s*"([^"]*)"/g)) {
 const usageIds = values(registry, /\busageId:\s*"([^"]+)"/g);
 unique(registryPath, "media usage_id", usageIds);
 
-const placeholder = /(ссылка на (его|её|их|раздел|страниц)|страниц[ау] на сайте|вот-вот обновят|профукал дедлайн|\(\(|\)\)|TODO|TBD)/iu;
+const placeholder = /(ссылка на (его|её|их|раздел|страниц)|страниц[ау] на сайте|вот-вот обновят|профукал дедлайн|\(\(|\)\)|TODO|TBD|!\[\[|```yaml|^Описание:|^Теги:)/imu;
 for (const slug of materialSlugs) {
   const file = path.join(root, "src/content/materials", `${slug}.mdx`);
   if (!fs.existsSync(file)) {
