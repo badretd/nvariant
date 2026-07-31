@@ -72,6 +72,20 @@ test("поиск строится из актуального общего те�
   assert.doesNotMatch(read("src/content/search-text.ts"), /\(\(|```yaml|Описание:|vs-edit-process/);
 });
 
+test("приватные материалы и выпуски исключаются из публичных индексов", () => {
+  assert.match(read("src/lib/types.ts"), /private\?: boolean/);
+  assert.match(registry, /publicMaterials = materials\.filter\(\(material\) => !material\.private\)/);
+  assert.match(registry, /publicIssues = issues\.filter\(\(issue\) => !issue\.private\)/);
+  assert.match(registry, /\.\.\.publicIssues\.map/);
+  assert.match(registry, /\.\.\.publicMaterials\.map/);
+  assert.match(read("app/sitemap.ts"), /publicIssues/);
+  assert.match(read("app/sitemap.ts"), /publicMaterials/);
+  assert.match(read("app/materials.xml/route.ts"), /publicMaterials\.map/);
+  assert.match(read("app/issues.xml/route.ts"), /publicIssues\.map/);
+  assert.match(read("app/materials/[slug]/page.tsx"), /robots: m\.private \? \{ index: false, follow: false \}/);
+  assert.match(read("app/issues/[slug]/page.tsx"), /robots: i\.private \? \{ index: false, follow: false \}/);
+});
+
 test("Bandcamp не запускается автоматически и имеет fallback", () => {
   assert.match(mdx("kogda-ty-ne-glavnyy"), /BandcampEmbed/);
   const blocks = read("src/components/content-blocks.tsx");

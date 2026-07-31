@@ -22,6 +22,6 @@ export function Authors({ material }: { material: MaterialMetadata }) {
   return <details className="authors" open><summary>Авторы <span>{material.authors.length}</span></summary><div className="authors-content">{material.authors.map((credit) => { const person = getPerson(credit.personId); return person && <div className="author-row" key={credit.personId}><Link href={`/people#person-${person.id}`}>{person.name}</Link><span>{credit.role}</span><p>{person.description}</p></div>; })}</div></details>;
 }
 export function IssueBelonging({ material }: { material: MaterialMetadata }) {
-  const issue = materialIssue(material); if (!issue) return null;
+  const issue = materialIssue(material); if (!issue || issue.private) return null;
   return <aside className="issue-belonging">Материал входит в <Link href={`/issues/${issue.slug}#material-${material.slug}`}>выпуск №{issue.number} «{issue.title}»</Link>.</aside>;
 }

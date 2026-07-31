@@ -4,7 +4,7 @@ export type Heading = { id: string; title: string; level: 2 | 3 };
 export type MaterialMetadata = {
   slug: string; title: string; description: string; publishedAt: string; updatedAt?: string;
   authors: AuthorCredit[]; people?: string[]; tags: string[]; issue?: string;
-  showInMaterialsArchive: boolean; cover?: string; media?: string[]; quoteIds?: string[];
+  private?: boolean; showInMaterialsArchive: boolean; cover?: string; media?: string[]; quoteIds?: string[];
   mediaUsages?: MediaUsageMetadata[];
   headings: Heading[]; readingTime: number; text: string; corrections?: Correction[];
   seo?: { title?: string; description?: string; image?: string };
@@ -17,7 +17,7 @@ export type IssueBlock =
 export type IssueSection = { id: string; title: string; intro?: string; blocks: IssueBlock[] };
 export type Issue = {
   number: number; slug: string; title: string; description: string; publishedAt: string;
-  cover: string; sections: IssueSection[]; corrections?: Correction[];
+  private?: boolean; cover: string; sections: IssueSection[]; corrections?: Correction[];
   seo?: { title?: string; description?: string; image?: string };
 };
 export type Person = {

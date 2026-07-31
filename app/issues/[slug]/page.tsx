@@ -2,7 +2,7 @@ import type { Metadata } from "next"; import Image from "next/image"; import Lin
 import { getIssue, getMaterial, getMedia, issueMaterials, issues, people } from "@/content/registry"; import { Corrections, formatDate, MaterialBody, MaterialHeader } from "@/components/material"; import { MediaBlock, QuoteBlock } from "@/components/content-blocks"; import { IssueToc } from "@/components/issue-toc";
 export const dynamicParams = false;
 export function generateStaticParams() { return issues.map(({ slug }) => ({ slug })); }
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const i = getIssue((await params).slug); if (!i) return {}; return { title: `№${i.number} ${i.title}`, description: i.description, alternates: { canonical: `/issues/${i.slug}` }, openGraph: { title: `№${i.number} ${i.title}`, description: i.description, images: [getMedia(i.cover)?.src ?? ""] } }; }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> { const i = getIssue((await params).slug); if (!i) return {}; return { title: `№${i.number} ${i.title}`, description: i.description, robots: i.private ? { index: false, follow: false } : undefined, alternates: { canonical: `/issues/${i.slug}` }, openGraph: { title: `№${i.number} ${i.title}`, description: i.description, images: [getMedia(i.cover)?.src ?? ""] } }; }
 export default async function IssuePage({ params }: { params: Promise<{ slug: string }> }) {
   const issue = getIssue((await params).slug); if (!issue) notFound(); const mats = issueMaterials(issue); const personIds = [...new Set(mats.flatMap((m) => [...m.authors.map((a) => a.personId), ...(m.people ?? [])]))];
   const cover = getMedia(issue.cover);

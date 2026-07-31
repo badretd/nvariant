@@ -58,6 +58,9 @@ export const issues: Issue[] = [{
   seo: { title: "№1. Опыт прошлых лет", description: "Контроль, перегрузка, делегирование, ограниченная ответственность и создание N-варианта.", image: "/media/issue-cover.png" },
 }];
 
+export const publicMaterials = materials.filter((material) => !material.private);
+export const publicIssues = issues.filter((issue) => !issue.private);
+
 export function getMaterial(slug: string) { return materials.find((item) => item.slug === slug); }
 export function getIssue(slug: string) { return issues.find((item) => item.slug === slug); }
 export function getPerson(id: string) { return people.find((item) => item.id === id); }
@@ -69,21 +72,21 @@ export function issueMaterials(issue: Issue) {
 }
 export function mediaUsages(id: string): MediaUsage[] {
   const usages: MediaUsage[] = [];
-  for (const material of materials) for (const usage of material.mediaUsages ?? []) if (usage.mediaId === id) {
+  for (const material of publicMaterials) for (const usage of material.mediaUsages ?? []) if (usage.mediaId === id) {
     usages.push({ mediaId: id, usageId: usage.usageId, label: material.title, url: `/materials/${material.slug}#media-${usage.usageId}`, context: "material" });
     const issue = materialIssue(material);
-    if (issue) usages.push({ mediaId: id, usageId: `${usage.usageId}-issue`, label: `№${issue.number} «${issue.title}»: ${material.title}`, url: `/issues/${issue.slug}#media-${usage.usageId}`, context: "issue" });
+    if (issue && !issue.private) usages.push({ mediaId: id, usageId: `${usage.usageId}-issue`, label: `№${issue.number} «${issue.title}»: ${material.title}`, url: `/issues/${issue.slug}#media-${usage.usageId}`, context: "issue" });
   }
-  for (const issue of issues) if (issue.cover === id) usages.push({ mediaId: id, usageId: `${id}-cover`, label: `Обложка выпуска №${issue.number} «${issue.title}»`, url: `/issues/${issue.slug}#media-${id}-cover`, context: "issue" });
+  for (const issue of publicIssues) if (issue.cover === id) usages.push({ mediaId: id, usageId: `${id}-cover`, label: `Обложка выпуска №${issue.number} «${issue.title}»`, url: `/issues/${issue.slug}#media-${id}-cover`, context: "issue" });
   for (const person of people) if (person.photo === id) usages.push({ mediaId: id, usageId: `${id}-portrait`, label: person.name, url: `/people#person-${person.id}`, context: "person" });
   return usages;
 }
 export function searchIndex(): SearchEntry[] {
   return [
-    ...issues.map((issue) => ({ id: `issue-${issue.slug}`, type: "Выпуск" as const, title: `№${issue.number} ${issue.title}`, text: `${issue.description} ${issue.sections.map((section) => `${section.title} ${section.intro ?? ""}`).join(" ")}`, url: `/issues/${issue.slug}`, tags: [] })),
-    ...materials.map((material) => ({ id: `material-${material.slug}`, type: "Материал" as const, title: material.title, text: `${material.description} ${material.text} ${material.authors.map((author) => getPerson(author.personId)?.name ?? "").join(" ")} ${materialIssue(material)?.title ?? ""} №${materialIssue(material)?.number ?? ""}`, url: `/materials/${material.slug}`, tags: material.tags })),
+    ...publicIssues.map((issue) => ({ id: `issue-${issue.slug}`, type: "Выпуск" as const, title: `№${issue.number} ${issue.title}`, text: `${issue.description} ${issue.sections.map((section) => `${section.title} ${section.intro ?? ""}`).join(" ")}`, url: `/issues/${issue.slug}`, tags: [] })),
+    ...publicMaterials.map((material) => ({ id: `material-${material.slug}`, type: "Материал" as const, title: material.title, text: `${material.description} ${material.text} ${material.authors.map((author) => getPerson(author.personId)?.name ?? "").join(" ")} ${materialIssue(material)?.private ? "" : materialIssue(material)?.title ?? ""} №${materialIssue(material)?.private ? "" : materialIssue(material)?.number ?? ""}`, url: `/materials/${material.slug}`, tags: material.tags })),
     ...people.map((person) => ({ id: `person-${person.id}`, type: "Человек" as const, title: person.name, text: `${person.aliases?.join(" ") ?? ""} ${person.description} ${person.occupation}`, url: `/people#person-${person.id}`, tags: person.tags })),
     ...media.map((asset) => ({ id: `media-${asset.id}`, type: "Медиа" as const, title: asset.title, text: `${asset.description} ${asset.alt} ${asset.author} ${asset.source}`, url: `/media/${asset.id}`, tags: asset.tags })),
-    ...quotes.map((quote) => ({ id: `quote-${quote.id}`, type: "Цитата" as const, title: quote.sourceTitle, text: quote.text, url: quote.sourceUrl, tags: [] })),
+    ...quotes.filter((quote) => !quote.sourceMaterial || !getMaterial(quote.sourceMaterial)?.private).map((quote) => ({ id: `quote-${quote.id}`, type: "Цитата" as const, title: quote.sourceTitle, text: quote.text, url: quote.sourceUrl, tags: [] })),
   ];
 }
