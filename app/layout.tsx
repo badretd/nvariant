@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Header, HashHighlight, Logo } from "@/components/ui";
 import "./globals.css";
 
@@ -13,6 +14,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return <html lang="ru" suppressHydrationWarning><head>
     <link rel="icon" type="image/svg+xml" href="/brand/nvariant-logo-light.svg" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="/brand/nvariant-logo-dark.svg" media="(prefers-color-scheme: dark)" />
-  </head><body><a className="skip-link" href="#main">К содержанию</a><Header /><HashHighlight />{children}<footer><LinkFooter /></footer></body></html>;
+  </head><body><a className="skip-link" href="#main">К содержанию</a><Header /><HashHighlight />{children}<footer><LinkFooter /></footer><Analytics /></body></html>;
 }
 function LinkFooter() { return <><span className="footer-brand"><Logo /> N-вариант</span><span>© 2026 Имран Бадретдинов · RSS: <a href="/materials.xml">материалы</a> / <a href="/issues.xml">выпуски</a></span></>; }
