@@ -101,4 +101,29 @@
   .material-header h1{font-size:clamp(2.5rem,13vw,3.5rem)}
   .prose h2{font-size:clamp(2rem,9vw,2.35rem)}
   .prose h3{font-size:clamp(1.5rem,7vw,1.65rem)}
+  .issue-hero h1{font-size:clamp(2.75rem,14vw,4.5rem)}
+  .issue-section>header h2{font-size:clamp(2.15rem,10vw,3.5rem);line-height:.94}
+  .embedded-material .material-header.compact h1{font-size:clamp(2.3rem,11vw,3.25rem)}
+}
+
+@media(max-width:700px){
+  .person-summary{grid-template-columns:minmax(0,1fr);gap:1.1rem}
+  .person-photo{width:100%;aspect-ratio:auto;max-height:none}
+  .person-photo img{width:100%;height:auto;aspect-ratio:auto;object-fit:contain}
+  .person-copy{grid-row:auto}
+  .person-summary h2{font-size:clamp(1.9rem,9vw,2.5rem)}
+  .person-count{grid-column:1}
+  .people-list details{margin-left:0;margin-top:.75rem}
+}
+
+@media(max-width:420px){
+  .person-summary{grid-template-columns:minmax(0,1fr)}
+  .person-photo{width:100%}
+  .person-count{grid-column:1}
+  .material-header h1{font-size:clamp(2.15rem,12vw,2.8rem);line-height:.98}
+  .prose h2{font-size:clamp(1.75rem,8.5vw,2rem);line-height:1.08}
+  .issue-section>header{grid-template-columns:42px minmax(0,1fr);gap:.6rem}
+  .issue-section>header>span{font-size:1.35rem}
+  .issue-section>header h2{font-size:clamp(1.85rem,9vw,2.5rem);line-height:.98}
+  .issue-section>header p{grid-column:1 / -1}
 }
